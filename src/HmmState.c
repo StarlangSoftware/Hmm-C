@@ -30,8 +30,8 @@ void free_hmm_state(Hmm_state_ptr hmm_state) {
  * @return Emission probability for a specific symbol.
  */
 double get_prob(Hmm_state_ptr hmm_state, void *symbol) {
-    if (hash_map_contains(hmm_state->emission_probabilities, symbol)){
-        return *(double*) hash_map_get(hmm_state->emission_probabilities, symbol);
+    if (hash_map_contains(hmm_state->emission_probabilities, symbol)) {
+        return *(double *) hash_map_get(hmm_state->emission_probabilities, symbol);
     } else {
         return 0;
     }
