@@ -20,27 +20,27 @@ struct hmm2 {
 typedef struct hmm2 Hmm2;
 typedef Hmm2 *Hmm2_ptr;
 
-Hmm2_ptr create_hmm2(Hash_set_ptr states,
+Hmm2_ptr create_hmm2(const Hash_set* states,
                      int observation_count,
-                     Array_list_ptr *observations,
-                     Array_list_ptr *emitted_symbols,
-                     unsigned int hash_function_state(void *number, int N),
-                     int compare_function_state(void *first, void *second),
-                     unsigned int hash_function_symbol(void *number, int N),
-                     int compare_function_symbol(void *first, void *second));
+                     const Array_list_ptr *observations,
+                     const Array_list_ptr *emitted_symbols,
+                     unsigned int hash_function_state(const void *number, int N),
+                     int compare_function_state(const void *first, const void *second),
+                     unsigned int hash_function_symbol(const void *number, int N),
+                     int compare_function_symbol(const void *first, const void *second));
 
 void free_hmm2(Hmm2_ptr hmm);
 
-Vector_ptr log_of_column_hmm2(Hmm2_ptr hmm, int column);
+Vector_ptr log_of_column_hmm2(const Hmm2* hmm, int column);
 
 void calculate_pi_hmm2(Hmm2_ptr hmm,
                        int observation_count,
-                       Array_list_ptr *observations);
+                       const Array_list_ptr *observations);
 
 void calculate_transition_probabilities_hmm2(Hmm2_ptr hmm,
                                              int observation_count,
-                                             Array_list_ptr *observations);
+                                             const Array_list_ptr *observations);
 
-Array_list_ptr viterbi_hmm2(Hmm2_ptr hmm, Array_list_ptr s);
+Array_list_ptr viterbi_hmm2(const Hmm2* hmm, const Array_list* s);
 
 #endif //HMM_HMM2_H

@@ -19,6 +19,6 @@ Hmm_state_ptr create_hmm_state(void *state, Hash_map_ptr emission_probabilities)
 
 void free_hmm_state(Hmm_state_ptr hmm_state);
 
-double get_prob(Hmm_state_ptr hmm_state, void *symbol);
+double get_prob(const Hmm_state* hmm_state, const void *symbol);
 
 #endif //HMM_HMMSTATE_H

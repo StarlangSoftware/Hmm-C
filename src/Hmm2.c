@@ -17,14 +17,14 @@
  * @param emittedSymbols An array of instances, where each instance consists of an array of symbols.
  */
 Hmm2_ptr
-create_hmm2(Hash_set_ptr states,
+create_hmm2(const Hash_set* states,
             int observation_count,
-            Array_list_ptr *observations,
-            Array_list_ptr *emitted_symbols,
-            unsigned int hash_function_state(void *number, int N),
-            int compare_function_state(void *first, void *second),
-            unsigned int (*hash_function_symbol)(void *, int),
-            int (*compare_function_symbol)(void *, void *)) {
+            const Array_list_ptr *observations,
+            const Array_list_ptr *emitted_symbols,
+            unsigned int hash_function_state(const void *number, int N),
+            int compare_function_state(const void *first, const void *second),
+            unsigned int (*hash_function_symbol)(const void *, int),
+            int (*compare_function_symbol)(const void *, const void *)) {
     Hmm2_ptr result;
     result = malloc(sizeof(Hmm2));
     result->state_count = states->hash_map->count;
@@ -67,7 +67,7 @@ void free_hmm2(Hmm2_ptr hmm) {
  * @param column Column index of the transition probability matrix.
  * @return A vector consisting of the logarithm of each value in the column in the transition probability matrix.
  */
-Vector_ptr log_of_column_hmm2(Hmm2_ptr hmm, int column) {
+Vector_ptr log_of_column_hmm2(const Hmm2* hmm, int column) {
     Vector_ptr result;
     int i;
     result = create_vector2(0, 0.0);
@@ -87,7 +87,7 @@ Vector_ptr log_of_column_hmm2(Hmm2_ptr hmm, int column) {
  *
  * @param observations A set of observations used to calculate the prior probabilities.
  */
-void calculate_pi_hmm2(Hmm2_ptr hmm, int observation_count, Array_list_ptr *observations) {
+void calculate_pi_hmm2(Hmm2_ptr hmm, int observation_count, const Array_list_ptr *observations) {
     hmm->pi = create_matrix(hmm->state_count, hmm->state_count);
     for (int i = 0; i < observation_count; i++) {
         Array_list_ptr observation = observations[i];
@@ -105,7 +105,7 @@ void calculate_pi_hmm2(Hmm2_ptr hmm, int observation_count, Array_list_ptr *obse
  *
  * @param observations A set of observations used to calculate the transition probabilities.
  */
-void calculate_transition_probabilities_hmm2(Hmm2_ptr hmm, int observation_count, Array_list_ptr *observations) {
+void calculate_transition_probabilities_hmm2(Hmm2_ptr hmm, int observation_count, const Array_list_ptr *observations) {
     hmm->transition_probabilities = create_matrix(hmm->state_count * hmm->state_count, hmm->state_count);
     for (int i = 0; i < observation_count; i++) {
         Array_list_ptr current = observations[i];
@@ -125,7 +125,7 @@ void calculate_transition_probabilities_hmm2(Hmm2_ptr hmm, int observation_count
  * @param s A set of observed symbols.
  * @return The most probable state sequence as an {@link ArrayList}.
  */
-Array_list_ptr viterbi_hmm2(Hmm2_ptr hmm, Array_list_ptr s) {
+Array_list_ptr viterbi_hmm2(const Hmm2* hmm, const Array_list* s) {
     void *emission, *emission1, *emission2;
     Array_list_ptr result;
     int sequenceLength = s->size, maxIndex;

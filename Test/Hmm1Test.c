@@ -39,10 +39,10 @@ int main() {
                                5,
                                observations,
                                emittedSymbols,
-                               (unsigned int (*)(void *, int)) hash_function_string,
-                               (int (*)(void *, void *)) compare_string,
-                               (unsigned int (*)(void *, int)) hash_function_int,
-                               (int (*)(void *, void *)) compare_int);
+                               (unsigned int (*)(const void *, int)) hash_function_string,
+                               (int (*)(const void *, const void *)) compare_string,
+                               (unsigned int (*)(const void *, int)) hash_function_int,
+                               (int (*)(const void *, const void *)) compare_int);
     int observed0[] = {1, 1, 1, 1, 1, 1};
     Array_list_ptr observed = create_array_list_of_int(observed0, 6);
     Array_list_ptr observedStates = viterbi_hmm1(hmm, observed);

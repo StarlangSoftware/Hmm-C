@@ -9,11 +9,11 @@
 
 double safe_log(double x);
 
-Hash_map_ptr calculate_emission_probabilities(void *state,
+Hash_map_ptr calculate_emission_probabilities(const void *state,
                                               int observation_count,
-                                              Array_list_ptr *observations,
-                                              Array_list_ptr *emitted_symbols,
-                                              unsigned int hash_function_symbol(void *number, int N),
-                                              int compare_function_symbol(void *first, void *second));
+                                              const Array_list_ptr *observations,
+                                              const Array_list_ptr *emitted_symbols,
+                                              unsigned int hash_function_symbol(const void *number, int N),
+                                              int compare_function_symbol(const void *first, const void *second));
 
 #endif //HMM_HMM_H
