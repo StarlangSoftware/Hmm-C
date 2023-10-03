@@ -8,11 +8,11 @@
 #include "HmmState.h"
 
 /**
- * A constructor of {@link Hmm2} class which takes a {@link Set} of states, an array of observations (which also
+ * A constructor of {@link Hmm2} class which takes a Set of states, an array of observations (which also
  * consists of an array of states) and an array of instances (which also consists of an array of emitted symbols).
  * The constructor calls its super method to calculate the emission probabilities for those states.
  *
- * @param states A {@link Set} of states, consisting of all possible states for this problem.
+ * @param states A Set of states, consisting of all possible states for this problem.
  * @param observations An array of instances, where each instance consists of an array of states.
  * @param emittedSymbols An array of instances, where each instance consists of an array of symbols.
  */
@@ -123,7 +123,7 @@ void calculate_transition_probabilities_hmm2(Hmm2_ptr hmm, int observation_count
  * viterbi calculates the most probable state sequence for a set of observed symbols.
  *
  * @param s A set of observed symbols.
- * @return The most probable state sequence as an {@link ArrayList}.
+ * @return The most probable state sequence as an ArrayList.
  */
 Array_list_ptr viterbi_hmm2(const Hmm2* hmm, const Array_list* s) {
     void *emission, *emission1, *emission2;

@@ -6,7 +6,7 @@
 #include "HmmState.h"
 
 /**
- * A constructor of {@link HmmState} class which takes a {@link State} and emission probabilities as inputs and
+ * A constructor of HmmState class which takes a State and emission probabilities as inputs and
  * initializes corresponding class variable with these inputs.
  *
  * @param state Data for this state.

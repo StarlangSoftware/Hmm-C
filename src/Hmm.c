@@ -24,12 +24,12 @@ double safe_log(double x) {
 }
 
 /**
- * A constructor of {@link Hmm} class which takes a {@link Set} of states, an array of observations (which also
+ * A constructor of Hmm class which takes a Set of states, an array of observations (which also
  * consists of an array of states) and an array of instances (which also consists of an array of emitted symbols).
  * The constructor initializes the state array with the set of states and uses observations and emitted symbols
  * to calculate the emission probabilities for those states.
  *
- * @param states A {@link Set} of states, consisting of all possible states for this problem.
+ * @param states A Set of states, consisting of all possible states for this problem.
  * @param observations An array of instances, where each instance consists of an array of states.
  * @param emittedSymbols An array of instances, where each instance consists of an array of symbols.
  */
