@@ -1,7 +1,7 @@
 from conans import ConanFile, CMake, tools
 
 
-class DataStructureConan(ConanFile):
+class HmmConan(ConanFile):
     name = "Hmm-C"
     version = "1.0.0"
     requires = "Math-C/1.0.0"
