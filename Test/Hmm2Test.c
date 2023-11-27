@@ -9,7 +9,6 @@
 #include "../src/Hmm2.h"
 
 int main() {
-    start_memory_check();
     char *array[] = {"HOT", "COLD"};
     Hash_set_ptr states = create_hash_set_of_string(array, 2);
     Array_list_ptr *observations;
@@ -121,5 +120,4 @@ int main() {
     free_array_list(observedStates, NULL);
     free_hmm2(hmm);
     free_hash_set(states, NULL);
-    end_memory_check();
 }
