@@ -3,6 +3,7 @@
 //
 
 #include <stdlib.h>
+#include <Memory/Memory.h>
 #include "HmmState.h"
 
 /**
@@ -13,14 +14,15 @@
  * @param emissionProbabilities Emission probabilities for this state
  */
 Hmm_state_ptr create_hmm_state(void *state, Hash_map_ptr emission_probabilities) {
-    Hmm_state_ptr result = malloc(sizeof(Hmm_state));
+    Hmm_state_ptr result = malloc_(sizeof(Hmm_state), "create_hmm_state");
     result->state = state;
     result->emission_probabilities = emission_probabilities;
     return result;
 }
 
 void free_hmm_state(Hmm_state_ptr hmm_state) {
-    free(hmm_state);
+    free_hash_map2(hmm_state->emission_probabilities, NULL, free_);
+    free_(hmm_state);
 }
 
 /**

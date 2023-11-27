@@ -2,7 +2,7 @@
 // Created by Olcay Taner YILDIZ on 18.02.2023.
 //
 
-#include <stdlib.h>
+#include <Memory/Memory.h>
 #include "Hmm2.h"
 #include "Hmm.h"
 #include "HmmState.h"
@@ -26,14 +26,14 @@ create_hmm2(const Hash_set* states,
             unsigned int (*hash_function_symbol)(const void *, int),
             int (*compare_function_symbol)(const void *, const void *)) {
     Hmm2_ptr result;
-    result = malloc(sizeof(Hmm2));
+    result = malloc_(sizeof(Hmm2), "create_hmm2_1");
     result->state_count = states->hash_map->count;
     result->state_indexes = create_hash_map(hash_function_state, compare_function_state);
     result->states = create_array_list();
     Array_list_ptr state_list = hash_set_key_list(states);
     for (int i = 0; i < state_list->size; i++) {
         int *index;
-        index = malloc(sizeof(int));
+        index = malloc_(sizeof(int), "create_hmm2_2");
         *index = i;
         hash_map_insert(result->state_indexes, array_list_get(state_list, i), index);
     }
@@ -55,10 +55,10 @@ create_hmm2(const Hash_set* states,
 
 void free_hmm2(Hmm2_ptr hmm) {
     free_matrix(hmm->transition_probabilities);
-    free_hash_map(hmm->state_indexes, free);
+    free_hash_map(hmm->state_indexes, free_);
     free_array_list(hmm->states, (void (*)(void *)) free_hmm_state);
     free_matrix(hmm->pi);
-    free(hmm);
+    free_(hmm);
 }
 
 /**
@@ -130,7 +130,7 @@ Array_list_ptr viterbi_hmm2(const Hmm2* hmm, const Array_list* s) {
     Array_list_ptr result;
     int sequenceLength = s->size, maxIndex;
     Matrix_ptr gamma = create_matrix(sequenceLength, hmm->state_count * hmm->state_count);
-    int *qs = calloc(sequenceLength, sizeof(int));
+    int *qs = calloc_(sequenceLength, sizeof(int), "viterbi_hmm2");
     double observationLikelihood;
     Matrix_ptr phi = create_matrix(sequenceLength, hmm->state_count * hmm->state_count);
     /*Initialize*/
@@ -164,7 +164,9 @@ Array_list_ptr viterbi_hmm2(const Hmm2* hmm, const Array_list* s) {
     }
     /*Backtrack pointers*/
     result = create_array_list();
-    qs[sequenceLength - 1] = max_index_of_vector(get_row(gamma, sequenceLength - 1));
+    Vector_ptr row_vector = get_row(gamma, sequenceLength - 1);
+    qs[sequenceLength - 1] = max_index_of_vector(row_vector);
+    free_vector(row_vector);
     array_list_insert(result, 0,
                       ((Hmm_state_ptr) array_list_get(hmm->states, qs[sequenceLength - 1] % hmm->state_count))->state);
     for (int i = sequenceLength - 2; i >= 1; i--) {
@@ -174,6 +176,6 @@ Array_list_ptr viterbi_hmm2(const Hmm2* hmm, const Array_list* s) {
     array_list_insert(result, 0, ((Hmm_state_ptr) array_list_get(hmm->states, qs[1] / hmm->state_count))->state);
     free_matrix(gamma);
     free_matrix(phi);
-    free(qs);
+    free_(qs);
     return result;
 }

@@ -7,6 +7,7 @@
 #include <CounterHashMap.h>
 #include <stdlib.h>
 #include "Hmm.h"
+#include "Memory/Memory.h"
 
 /**
  * safeLog calculates the logarithm of a number. If the number is less than 0, the logarithm is not defined, therefore
@@ -58,9 +59,11 @@ Hash_map_ptr calculate_emission_probabilities(const void *state,
     Array_list_ptr list = key_value_list(counts->map);
     for (int i = 0; i < list->size; i++) {
         Hash_node_ptr hash_node = array_list_get(list, i);
-        double *p = malloc(sizeof(double));
+        double *p = malloc_(sizeof(double), "calculate_emission_probabilities");
         *p = *((int *) hash_node->value) / sum;
         hash_map_insert(emission_probabilities, hash_node->key, p);
     }
+    free_array_list(list, NULL);
+    free_counter_hash_map(counts);
     return emission_probabilities;
 }

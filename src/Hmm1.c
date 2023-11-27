@@ -2,7 +2,7 @@
 // Created by Olcay Taner YILDIZ on 16.02.2023.
 //
 
-#include <stdlib.h>
+#include <Memory/Memory.h>
 #include "Hmm1.h"
 #include "HmmState.h"
 #include "Hmm.h"
@@ -26,14 +26,14 @@ create_hmm1(const Hash_set* states,
             unsigned int hash_function_symbol(const void *number, int N),
             int compare_function_symbol(const void *first, const void *second)) {
     Hmm1_ptr result;
-    result = malloc(sizeof(Hmm1));
+    result = malloc_(sizeof(Hmm1), "create_hmm1_1");
     result->state_count = states->hash_map->count;
     result->state_indexes = create_hash_map(hash_function_state, compare_function_state);
     result->states = create_array_list();
     Array_list_ptr state_list = hash_set_key_list(states);
     for (int i = 0; i < state_list->size; i++) {
         int *index;
-        index = malloc(sizeof(int));
+        index = malloc_(sizeof(int), "create_hmm1_2");
         *index = i;
         hash_map_insert(result->state_indexes, array_list_get(state_list, i), index);
     }
@@ -55,10 +55,10 @@ create_hmm1(const Hash_set* states,
 
 void free_hmm1(Hmm1_ptr hmm) {
     free_matrix(hmm->transition_probabilities);
-    free_hash_map(hmm->state_indexes, free);
+    free_hash_map(hmm->state_indexes, free_);
     free_array_list(hmm->states, (void (*)(void *)) free_hmm_state);
     free_vector(hmm->pi);
-    free(hmm);
+    free_(hmm);
 }
 
 /**
@@ -129,7 +129,7 @@ Array_list_ptr viterbi_hmm1(const Hmm1* hmm, const Array_list* s) {
     Array_list_ptr result;
     int sequenceLength = s->size, maxIndex;
     Matrix_ptr gamma = create_matrix(sequenceLength, hmm->state_count);
-    int *qs = calloc(sequenceLength, sizeof(int));
+    int *qs = calloc_(sequenceLength, sizeof(int), "viterbi_hmm1");
     double observationLikelihood;
     Matrix_ptr phi = create_matrix(sequenceLength, hmm->state_count);
     /*Initialize*/
@@ -143,7 +143,9 @@ Array_list_ptr viterbi_hmm1(const Hmm1* hmm, const Array_list* s) {
         emission = array_list_get(s, t);
         for (int j = 0; j < hmm->state_count; j++) {
             Vector_ptr tempArray = log_of_column_hmm1(hmm, j);
-            add_vector(tempArray, get_row(gamma, t - 1));
+            Vector_ptr row_vector = get_row(gamma, t - 1);
+            add_vector(tempArray, row_vector);
+            free_vector(row_vector);
             maxIndex = max_index_of_vector(tempArray);
             observationLikelihood = get_prob(((Hmm_state_ptr) array_list_get(hmm->states, j)), emission);
             gamma->values[t][j] = get_value(tempArray, maxIndex) + safe_log(observationLikelihood);
@@ -153,7 +155,9 @@ Array_list_ptr viterbi_hmm1(const Hmm1* hmm, const Array_list* s) {
     }
     /*Backtrack pointers*/
     result = create_array_list();
-    qs[sequenceLength - 1] = max_index_of_vector(get_row(gamma, sequenceLength - 1));
+    Vector_ptr row_vector = get_row(gamma, sequenceLength - 1);
+    qs[sequenceLength - 1] = max_index_of_vector(row_vector);
+    free_vector(row_vector);
     array_list_insert(result, 0, ((Hmm_state_ptr) array_list_get(hmm->states, qs[sequenceLength - 1]))->state);
     for (int i = sequenceLength - 2; i >= 0; i--) {
         qs[i] = phi->values[i + 1][qs[i + 1]];
@@ -161,7 +165,7 @@ Array_list_ptr viterbi_hmm1(const Hmm1* hmm, const Array_list* s) {
     }
     free_matrix(gamma);
     free_matrix(phi);
-    free(qs);
+    free_(qs);
     return result;
 }
 

@@ -3,16 +3,17 @@
 //
 
 #include <HashMap/HashSet.h>
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <Memory/Memory.h>
 #include "../src/Hmm2.h"
 
 int main() {
+    start_memory_check();
     char *array[] = {"HOT", "COLD"};
     Hash_set_ptr states = create_hash_set_of_string(array, 2);
     Array_list_ptr *observations;
-    observations = malloc(5 * sizeof(Array_list_ptr));
+    observations = malloc_(5 * sizeof(Array_list_ptr), "main_1");
     char *array0[] = {"HOT", "HOT", "HOT"};
     char *array1[] = {"HOT", "COLD", "COLD", "COLD"};
     char *array2[] = {"HOT", "COLD", "HOT", "COLD"};
@@ -24,7 +25,7 @@ int main() {
     observations[3] = create_array_list_of_string(array3, 5);
     observations[4] = create_array_list_of_string(array4, 5);
     Array_list_ptr *emittedSymbols;
-    emittedSymbols = malloc(5 * sizeof(Array_list_ptr));
+    emittedSymbols = malloc_(5 * sizeof(Array_list_ptr), "main_2");
     int int_array0[] = {3, 2, 3};
     int int_array1[] = {2, 2, 1, 1};
     int int_array2[] = {3, 1, 2, 1};
@@ -43,6 +44,12 @@ int main() {
                                (int (*)(const void *, const void *)) compare_string,
                                (unsigned int (*)(const void *, int)) hash_function_int,
                                (int (*)(const void *, const void *)) compare_int);
+    for (int i = 0; i < 5; i++){
+        free_array_list(observations[i], NULL);
+        free_array_list(emittedSymbols[i], NULL);
+    }
+    free_(observations);
+    free_(emittedSymbols);
     int observed0[] = {1, 1, 1, 1, 1, 1};
     Array_list_ptr observed = create_array_list_of_int(observed0, 6);
     Array_list_ptr observedStates = viterbi_hmm2(hmm, observed);
@@ -112,4 +119,7 @@ int main() {
         printf("Error in test Hmm2Test 18\n");
     }
     free_array_list(observedStates, NULL);
+    free_hmm2(hmm);
+    free_hash_set(states, NULL);
+    end_memory_check();
 }
