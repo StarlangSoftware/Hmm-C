@@ -38,8 +38,10 @@ Hash_map_ptr calculate_emission_probabilities(const void *state,
                                               int observation_count,
                                               const Array_list_ptr *observations,
                                               const Array_list_ptr *emitted_symbols,
+                                              int compare_function_state(const void *first, const void *second),
                                               unsigned int hash_function_symbol(const void *number, int N),
-                                              int compare_function_symbol(const void *first, const void *second)) {
+                                              int compare_function_symbol(const void *first, const void *second),
+                                              void* clone_symbol(void* symbol)) {
     Counter_hash_map_ptr counts;
     Hash_map_ptr emission_probabilities;
     void *current_state;
@@ -49,7 +51,7 @@ Hash_map_ptr calculate_emission_probabilities(const void *state,
         for (int j = 0; j < observations[i]->size; j++) {
             current_state = array_list_get(observations[i], j);
             current_symbol = array_list_get(emitted_symbols[i], j);
-            if (current_state == state) {
+            if (compare_function_state(current_state, state) == 0) {
                 put_counter_hash_map(counts, current_symbol);
             }
         }
@@ -61,7 +63,7 @@ Hash_map_ptr calculate_emission_probabilities(const void *state,
         Hash_node_ptr hash_node = array_list_get(list, i);
         double *p = malloc_(sizeof(double), "calculate_emission_probabilities");
         *p = *((int *) hash_node->value) / sum;
-        hash_map_insert(emission_probabilities, hash_node->key, p);
+        hash_map_insert(emission_probabilities, clone_symbol(hash_node->key), p);
     }
     free_array_list(list, NULL);
     free_counter_hash_map(counts);

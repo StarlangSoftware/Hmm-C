@@ -13,7 +13,9 @@ Hash_map_ptr calculate_emission_probabilities(const void *state,
                                               int observation_count,
                                               const Array_list_ptr *observations,
                                               const Array_list_ptr *emitted_symbols,
+                                              int compare_function_state(const void *first, const void *second),
                                               unsigned int hash_function_symbol(const void *number, int N),
-                                              int compare_function_symbol(const void *first, const void *second));
+                                              int compare_function_symbol(const void *first, const void *second),
+                                              void* clone_symbol(void* symbol));
 
 #endif //HMM_HMM_H

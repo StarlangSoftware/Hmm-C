@@ -26,8 +26,10 @@ Hmm1_ptr create_hmm1(const Hash_set* states,
                      const Array_list_ptr *emitted_symbols,
                      unsigned int hash_function_state(const void *number, int N),
                      int compare_function_state(const void *first, const void *second),
+                     void* clone_state(void* state),
                      unsigned int hash_function_symbol(const void *number, int N),
-                     int compare_function_symbol(const void *first, const void *second));
+                     int compare_function_symbol(const void *first, const void *second),
+                     void* clone_symbol(void* symbol));
 
 void free_hmm1(Hmm1_ptr hmm);
 

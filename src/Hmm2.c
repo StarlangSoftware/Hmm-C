@@ -23,8 +23,10 @@ create_hmm2(const Hash_set* states,
             const Array_list_ptr *emitted_symbols,
             unsigned int hash_function_state(const void *number, int N),
             int compare_function_state(const void *first, const void *second),
+            void* clone_state(void* state),
             unsigned int (*hash_function_symbol)(const void *, int),
-            int (*compare_function_symbol)(const void *, const void *)) {
+            int (*compare_function_symbol)(const void *, const void *),
+            void* clone_symbol(void* symbol)) {
     Hmm2_ptr result;
     result = malloc_(sizeof(Hmm2), "create_hmm2_1");
     result->state_count = states->hash_map->count;
@@ -35,7 +37,7 @@ create_hmm2(const Hash_set* states,
         int *index;
         index = malloc_(sizeof(int), "create_hmm2_2");
         *index = i;
-        hash_map_insert(result->state_indexes, array_list_get(state_list, i), index);
+        hash_map_insert(result->state_indexes, clone_state(array_list_get(state_list, i)), index);
     }
     calculate_pi_hmm2(result, observation_count, observations);
     for (int i = 0; i < state_list->size; i++) {
@@ -43,9 +45,11 @@ create_hmm2(const Hash_set* states,
                                                                                observation_count,
                                                                                observations,
                                                                                emitted_symbols,
+                                                                               compare_function_state,
                                                                                hash_function_symbol,
-                                                                               compare_function_symbol);
-        array_list_add(result->states, create_hmm_state(array_list_get(state_list, i),
+                                                                               compare_function_symbol,
+                                                                               clone_symbol);
+        array_list_add(result->states, create_hmm_state(clone_state(array_list_get(state_list, i)),
                                                         emission_probabilities));
     }
     free_array_list(state_list, NULL);
@@ -55,7 +59,7 @@ create_hmm2(const Hash_set* states,
 
 void free_hmm2(Hmm2_ptr hmm) {
     free_matrix(hmm->transition_probabilities);
-    free_hash_map(hmm->state_indexes, free_);
+    free_hash_map2(hmm->state_indexes, free_, free_);
     free_array_list(hmm->states, (void (*)(void *)) free_hmm_state);
     free_matrix(hmm->pi);
     free_(hmm);
