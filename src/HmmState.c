@@ -20,6 +20,10 @@ Hmm_state_ptr create_hmm_state(void *state, Hash_map_ptr emission_probabilities)
     return result;
 }
 
+/**
+ * Frees memory allocated for Hmm State.
+ * @param hmm_state Hmm state
+ */
 void free_hmm_state(Hmm_state_ptr hmm_state) {
     free_(hmm_state->state);
     free_hash_map2(hmm_state->emission_probabilities, free_, free_);
